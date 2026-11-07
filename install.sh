@@ -116,15 +116,29 @@ else
 fi
 ' || warn "Antigravity CLI não foi instalado; o restante da instalação continuará."
 
-log "Tentando instalar o editor Zed para Linux ARM64..."
+log "Instalando ZCode oficial da Z.ai para Linux ARM64..."
 proot-distro login "$CONTAINER" -- bash -lc '
-set -u
-if curl -fsSL https://zed.dev/install.sh | sh; then
-  command -v zed || true
+set -Eeuo pipefail
+export DEBIAN_FRONTEND=noninteractive
+ZCODE_VERSION="3.17.2"
+ZCODE_DEB="/tmp/ZCode-${ZCODE_VERSION}-linux-arm64.deb"
+ZCODE_URL="https://cdn-zcode.z.ai/zcode/electron/releases/${ZCODE_VERSION}/linux-arm64/ZCode-${ZCODE_VERSION}-linux-arm64.deb"
+if curl -fL --retry 3 "$ZCODE_URL" -o "$ZCODE_DEB"; then
+  if dpkg -i "$ZCODE_DEB"; then
+    rm -f "$ZCODE_DEB"
+  else
+    apt-get update
+    apt-get install -f -y
+    dpkg -i "$ZCODE_DEB"
+    rm -f "$ZCODE_DEB"
+  fi
+  if ! command -v zcode >/dev/null 2>&1 && ! command -v ZCode >/dev/null 2>&1; then
+    echo "AVISO: pacote ZCode instalado, mas o comando executável não foi localizado."
+  fi
 else
-  echo "AVISO: Zed não pôde ser instalado. A execução também depende de Vulkan 1.3."
+  echo "AVISO: download oficial do ZCode ARM64 falhou; os demais componentes continuarão."
 fi
-' || warn "Zed não foi instalado; o restante da instalação continuará."
+' || warn "ZCode não pôde ser instalado; o restante da instalação continuará."
 
 log "Instalando Brave para ARM64 pelo repositório oficial..."
 proot-distro login "$CONTAINER" -- bash -lc '
@@ -209,9 +223,35 @@ Terminal=false
 Categories=Development;
 EOF
 
+# ZCode desktop launcher. The package may expose either command spelling.
+if command -v zcode >/dev/null 2>&1 || command -v ZCode >/dev/null 2>&1; then
+  cat > /usr/local/bin/zcode-desktop <<'EOF'
+#!/bin/bash
+if command -v zcode >/dev/null 2>&1; then
+  exec zcode --no-sandbox --disable-gpu "$@"
+elif command -v ZCode >/dev/null 2>&1; then
+  exec ZCode --no-sandbox --disable-gpu "$@"
+fi
+echo "ZCode não encontrado no PATH. Reinstale o pacote oficial." >&2
+exit 127
+EOF
+  chmod 755 /usr/local/bin/zcode-desktop
+  cat > /usr/share/applications/zcode.desktop <<'EOF'
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=ZCode (Z.ai)
+Comment=AI coding workspace by Z.ai
+Exec=/usr/local/bin/zcode-desktop %U
+Icon=utilities-terminal
+Terminal=false
+Categories=Development;IDE;
+EOF
+fi
+
 # Graphical editor and browser launchers. Chromium browsers need no-sandbox
 # in many PRoot setups; this is a compatibility trade-off, not full isolation.
-for app in zed brave-browser google-chrome-stable; do
+for app in brave-browser google-chrome-stable; do
   case "$app" in
     zed) label="Zed"; exec_cmd="zed" ;;
     brave-browser) label="Brave"; exec_cmd="brave-browser --no-sandbox --disable-dev-shm-usage" ;;
@@ -234,7 +274,7 @@ done
 
 # Copy application shortcuts to the XFCE desktop as visible one-click icons.
 mkdir -p /root/Desktop
-for desktop_file in claude-code.desktop codex.desktop antigravity-cli.desktop zed.desktop brave-browser.desktop google-chrome-stable.desktop; do
+for desktop_file in claude-code.desktop codex.desktop antigravity-cli.desktop zcode.desktop brave-browser.desktop google-chrome-stable.desktop; do
   if [ -f "/usr/share/applications/$desktop_file" ]; then
     cp "/usr/share/applications/$desktop_file" "/root/Desktop/$desktop_file"
     chmod +x "/root/Desktop/$desktop_file"
@@ -249,7 +289,7 @@ set -u
 sleep 4
 command -v xfconf-query >/dev/null 2>&1 || exit 0
 command -v xfce4-panel >/dev/null 2>&1 || exit 0
-apps=(claude-code.desktop codex.desktop antigravity-cli.desktop zed.desktop brave-browser.desktop google-chrome-stable.desktop)
+apps=(claude-code.desktop codex.desktop antigravity-cli.desktop zcode.desktop brave-browser.desktop google-chrome-stable.desktop)
 items=()
 for f in "${apps[@]}"; do
   [ -f "/usr/share/applications/$f" ] && items+=("$f")
