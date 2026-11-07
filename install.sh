@@ -2,7 +2,6 @@
 set -Eeuo pipefail
 
 CONTAINER="claude-code"
-DISPLAY_NUM=":1"
 PREFIX_DIR="${PREFIX:-/data/data/com.termux/files/usr}"
 BIN_DIR="$PREFIX_DIR/bin"
 LAUNCHER="$BIN_DIR/claude-code-desktop"
@@ -14,9 +13,7 @@ trap 'die "A instalação foi interrompida na linha $LINENO. Corrija a conexão/
 [ -n "${TERMUX_VERSION:-}" ] || [ -d /data/data/com.termux ] || die "Este instalador deve ser executado dentro do Termux."
 [ "$(uname -m)" = "aarch64" ] || die "Este instalador foi preparado para Android ARM64 (aarch64)."
 
-if ! command -v pkg >/dev/null 2>&1; then
-  die "Gerenciador pkg do Termux não encontrado."
-fi
+command -v pkg >/dev/null 2>&1 || die "Gerenciador pkg do Termux não encontrado."
 
 log "Atualizando o Termux e instalando Node.js, proot-distro e suporte gráfico..."
 pkg update -y
@@ -50,7 +47,7 @@ proot-distro login "$CONTAINER" -- bash -lc '
 set -Eeuo pipefail
 export PATH="$HOME/.local/bin:$PATH"
 curl -fsSL https://claude.ai/install.sh | bash
-command -v claude >/dev/null 2>&1 || test -x "$HOME/.local/bin/claude"
+test -x "$HOME/.local/bin/claude" || command -v claude >/dev/null 2>&1
 '
 
 log "Configurando o atalho Claude Code no menu do XFCE..."
@@ -95,6 +92,7 @@ chmod 755 "$LAUNCHER"
 log "Verificando instalação..."
 proot-distro login "$CONTAINER" -- bash -lc '
 set -e
+export PATH="$HOME/.local/bin:$PATH"
 node --version
 npm --version
 claude --version
