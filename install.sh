@@ -70,7 +70,8 @@ command -v termux-x11 >/dev/null 2>&1 || die "O comando termux-x11 não foi inst
 command -v proot-distro >/dev/null 2>&1 || die "proot-distro não foi instalado."
 
 # ---------- Ubuntu container (create once, then resume) ----------
-if proot-distro list 2>/dev/null | grep -Eq "(^|[[:space:]])${CONTAINER}([*]?[[:space:]]|$)"; then
+ROOTFS_DIR="$PREFIX_DIR/var/lib/proot-distro/installed-rootfs/$CONTAINER"
+if [ -d "$ROOTFS_DIR" ] || proot-distro list 2>/dev/null | grep -Fq "$CONTAINER"; then
   log "O Ubuntu '$CONTAINER' já existe. Vou preservar e continuar a configuração."
 else
   log "Baixando e criando Ubuntu 24.04 ARM64 isolado..."
