@@ -87,14 +87,21 @@ node -e "const v=process.versions.node.split(\".\").map(Number); if(v[0] < 18) {
 npm --version
 '
 
-# Use the documented npm installation path rather than the native installer,
-# which Anthropic currently labels as alpha.
+# Install official CLI tools inside Ubuntu (not in the Android host).
 log "Instalando Claude Code pelo pacote oficial da Anthropic..."
 proot-distro login "$CONTAINER" -- bash -lc '
 set -Eeuo pipefail
 npm install -g @anthropic-ai/claude-code
 command -v claude
 claude --version
+'
+
+log "Instalando Codex CLI pelo pacote oficial da OpenAI..."
+proot-distro login "$CONTAINER" -- bash -lc '
+set -Eeuo pipefail
+npm install -g @openai/codex
+command -v codex
+codex --version
 '
 
 # ---------- XFCE menu shortcut ----------
@@ -115,6 +122,23 @@ Type=Application
 Name=Claude Code
 Comment=Open Claude Code in a terminal
 Exec=/usr/local/bin/claude-code-terminal
+Icon=utilities-terminal
+Terminal=false
+Categories=Development;
+EOF
+cat > /usr/local/bin/codex-terminal <<'"'"'EOF'"'"'
+#!/bin/bash
+export PATH="$HOME/.local/bin:$PATH"
+exec xfce4-terminal --title="OpenAI Codex" --hold --command="codex"
+EOF
+chmod 755 /usr/local/bin/codex-terminal
+cat > /usr/share/applications/codex.desktop <<'"'"'EOF'"'"'
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=OpenAI Codex
+Comment=Open Codex CLI in a terminal
+Exec=/usr/local/bin/codex-terminal
 Icon=utilities-terminal
 Terminal=false
 Categories=Development;
@@ -166,11 +190,14 @@ set -Eeuo pipefail
 node -e "const v=process.versions.node.split(\".\").map(Number); if(v[0] < 18) process.exit(1)"
 npm --version >/dev/null
 claude --version
+codex --version
 command -v xfce4-session >/dev/null
 command -v xfce4-terminal >/dev/null
 command -v thunar >/dev/null
 test -x /usr/local/bin/claude-code-terminal
 test -f /usr/share/applications/claude-code.desktop
+test -x /usr/local/bin/codex-terminal
+test -f /usr/share/applications/codex.desktop
 '
 test -x "$LAUNCHER" || die "O comando de inicialização não foi criado."
 
