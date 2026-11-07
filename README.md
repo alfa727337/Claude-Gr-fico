@@ -35,7 +35,7 @@ O instalador configura automaticamente:
 - Node.js, npm, Git, curl, wget e certificados dentro do Ubuntu.
 - Claude Code pelo pacote npm oficial da Anthropic.
 - Atalhos para Claude Code, Codex, Antigravity CLI e ZCode (quando instalados) no menu do XFCE.
-- Comando de inicialização `claude-code-desktop` no Termux.
+- Comando de inicialização `programas-linux-desktop` no Termux.
 - Verificações de versões e componentes essenciais antes de declarar sucesso.
 
 O processo baixa os componentes diretamente de seus repositórios oficiais. O tempo depende da conexão, do armazenamento e do aparelho.
@@ -45,7 +45,7 @@ O processo baixa os componentes diretamente de seus repositórios oficiais. O te
 Depois que o instalador terminar, execute no Termux:
 
 ```bash
-claude-code-desktop
+programas-linux-desktop
 ```
 
 O Termux:X11 abrirá a tela gráfica. No XFCE, use o menu de aplicativos ou os ícones da área de trabalho para abrir as ferramentas e navegadores que tenham sido instalados com sucesso. Claude Code, Codex e Antigravity CLI abrem em terminais; o ZCode é o aplicativo gráfico da Z.ai. Na primeira execução, faça login com sua própria conta em cada serviço; nenhuma conta ou credencial é fornecida pelo projeto.
