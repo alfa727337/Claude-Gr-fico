@@ -8,7 +8,7 @@ readonly DISPLAY_NUMBER=":1"
 readonly PREFIX_DIR="${PREFIX:-/data/data/com.termux/files/usr}"
 readonly BIN_DIR="$PREFIX_DIR/bin"
 readonly LAUNCHER="$BIN_DIR/claude-code-desktop"
-readonly MIN_FREE_KB=5242880
+readonly MIN_FREE_KB=4000000
 
 log()  { printf '\n\033[1;32m[SETUP]\033[0m %s\n' "$*"; }
 warn() { printf '\n\033[1;33m[AVISO]\033[0m %s\n' "$*" >&2; }
@@ -38,7 +38,7 @@ fi
 FREE_KB="$(df -Pk "$PREFIX_DIR" | awk 'NR==2 {print $4}')"
 if [[ "$FREE_KB" =~ ^[0-9]+$ ]]; then
   if [ "$FREE_KB" -lt "$MIN_FREE_KB" ]; then
-    die "Há menos de 5 GB livres no armazenamento do Termux. Libere espaço antes de instalar Ubuntu, XFCE e Claude Code."
+    die "Há menos de aproximadamente 4 GB livres no armazenamento do Termux. Libere espaço antes de instalar Ubuntu, XFCE e Claude Code."
   fi
   if [ "$FREE_KB" -lt 8388608 ]; then
     warn "Há menos de 8 GB livres. A instalação pode precisar de espaço adicional para atualizações e cache."
