@@ -27,12 +27,10 @@ trap on_error ERR
 command -v pkg >/dev/null 2>&1 || die "O gerenciador de pacotes pkg não foi encontrado."
 [ -n "${PREFIX:-}" ] || die "A variável PREFIX não está definida. Abra o Termux oficial e tente novamente."
 
-if command -v pm >/dev/null 2>&1; then
-  if ! pm path com.termux.x11 >/dev/null 2>&1; then
-    die "O aplicativo Termux:X11 não foi detectado. Instale o APK Termux:X11 compatível com sua instalação do Termux e execute novamente."
-  fi
-else
-  warn "Não foi possível verificar automaticamente o APK Termux:X11. O comando gráfico será validado na primeira abertura."
+# Android's package service (pm path) may fail with a Binder transaction error
+# on some devices even when Termux:X11 is installed. Do not block setup here.
+if command -v pm >/dev/null 2>&1 && ! pm path com.termux.x11 >/dev/null 2>&1; then
+  warn "Não foi possível confirmar o Termux:X11 via pm path. Isso pode ser uma falha do serviço Android; a abertura real será verificada ao iniciar o desktop."
 fi
 
 FREE_KB="$(df -Pk "$PREFIX_DIR" | awk 'NR==2 {print $4}')"
@@ -141,10 +139,9 @@ command -v proot-distro >/dev/null 2>&1 || {
   echo "ERRO: proot-distro não encontrado. Execute novamente o instalador."
   exit 1
 }
-if command -v pm >/dev/null 2>&1 && ! pm path com.termux.x11 >/dev/null 2>&1; then
-  echo "ERRO: instale o APK Termux:X11 no Android."
-  exit 1
-fi
+# Do not use pm path as a hard gate: Android package-manager queries can
+# fail on some devices even when the Termux:X11 APK is installed.
+# Validate the app by attempting to launch its activity below.
 
 termux-wake-lock >/dev/null 2>&1 || true
 termux-x11 "$DISPLAY_NUMBER" >/dev/null 2>&1 &
