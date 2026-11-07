@@ -89,9 +89,15 @@ export DEBIAN_FRONTEND=noninteractive
 apt-get update
 apt-get install -y --no-install-recommends \
   xfce4 xfce4-terminal thunar dbus-x11 dbus-user-session \
-  xterm fonts-dejavu-core adwaita-icon-theme \
-  nodejs npm git curl wget ca-certificates file procps psmisc \
-  sudo xdg-utils
+  xterm fonts-dejavu-core fonts-liberation fonts-noto-core fonts-noto-color-emoji \
+  adwaita-icon-theme hicolor-icon-theme shared-mime-info desktop-file-utils \
+  nodejs npm python3 python3-pip python3-venv python3-dev \
+  build-essential gcc g++ make cmake pkg-config clang \
+  git git-lfs curl wget ca-certificates gnupg gpg file unzip zip p7zip-full \
+  procps psmisc lsof nano vim less htop tree rsync \
+  openssh-client openssh-server dnsutils iputils-ping net-tools \
+  libffi-dev libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev \
+  sudo xdg-utils xdg-user-dirs
 '
 
 # Claude Code officially supports Linux ARM64 and requires Node.js 18+.
@@ -99,6 +105,11 @@ log "Validando Node.js e npm dentro do Ubuntu..."
 proot-distro login "$CONTAINER" -- bash -lc '
 set -Eeuo pipefail
 node -e "const v=process.versions.node.split(\".\").map(Number); if(v[0] < 18) { console.error(\"Node.js 18+ é obrigatório; encontrado: \" + process.version); process.exit(1); }"
+python3 --version
+python3 -m pip --version
+python3 -m venv --help >/dev/null
+gcc --version | head -n 1
+cmake --version | head -n 1
 npm --version
 '
 
@@ -394,6 +405,11 @@ log "Executando verificações finais..."
 proot-distro login "$CONTAINER" -- bash -lc '
 set -Eeuo pipefail
 node -e "const v=process.versions.node.split(\".\").map(Number); if(v[0] < 18) process.exit(1)"
+python3 --version
+python3 -m pip --version
+python3 -m venv --help >/dev/null
+gcc --version >/dev/null
+cmake --version >/dev/null
 npm --version >/dev/null
 claude --version
 codex --version
