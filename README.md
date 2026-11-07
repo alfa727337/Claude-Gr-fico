@@ -29,7 +29,7 @@ Cole exatamente este único comando:
 curl -fsSL https://raw.githubusercontent.com/alfa727337/Claude-Gr-fico/main/install.sh | bash
 ```
 
-O script baixa e configura automaticamente os pacotes necessários no Termux e, em seguida, cria o Ubuntu e instala o ambiente e as ferramentas dentro dele. Em instalações limpas, o Termux precisa conseguir executar o `curl` que já vem disponível no ambiente inicial e ter acesso à internet. Se a própria instalação básica do Termux estiver corrompida a ponto de o comando `curl` não iniciar, nenhum script remoto pode ser baixado por esse mesmo comando; isso é uma falha prévia do aplicativo/ambiente, não uma dependência que o instalador possa instalar antes de ser executado.
+O script baixa e configura automaticamente os pacotes necessários no Termux e, em seguida, cria o Ubuntu e instala o ambiente gráfico, runtimes e uma base ampla de desenvolvimento dentro dele, incluindo Node.js/npm, Python 3/pip/venv e ferramentas de compilação. Em instalações limpas, o Termux precisa conseguir executar o `curl` que já vem disponível no ambiente inicial e ter acesso à internet. Se a própria instalação básica do Termux estiver corrompida a ponto de o comando `curl` não iniciar, nenhum script remoto pode ser baixado por esse mesmo comando; isso é uma falha prévia do aplicativo/ambiente, não uma dependência que o instalador possa instalar antes de ser executado.
 
 O instalador configura automaticamente:
 
@@ -37,7 +37,9 @@ O instalador configura automaticamente:
 - PRoot-Distro e um Ubuntu 24.04 ARM64 novo e isolado.
 - XFCE (área de trabalho gráfica), terminal XFCE e Thunar (gerenciador de arquivos).
 - DBus, fontes, ícones e dependências do ambiente gráfico.
-- Node.js, npm, Git, curl, wget e certificados dentro do Ubuntu.
+- Node.js, npm, Python 3, pip, venv, cabeçalhos de desenvolvimento, Git/Git LFS, curl, wget e certificados dentro do Ubuntu.
+- Toolchain de desenvolvimento: GCC/G++, Make, CMake, Clang, pkg-config e bibliotecas comuns de compilação para projetos Python/nativos.
+- Utilitários de sistema, rede, SSH, compactação, edição de texto, monitoramento e fontes adicionais.
 - Claude Code pelo pacote npm oficial da Anthropic.
 - Atalhos para Claude Code, Codex, Antigravity CLI e ZCode (quando instalados) no menu do XFCE.
 - Comando de inicialização `programas-linux-desktop` no Termux.
