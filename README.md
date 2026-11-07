@@ -1,6 +1,6 @@
 # Ubuntu gráfico + Claude Code no Android
 
-Instalador automatizado para Termux em aparelhos Android ARM64. Ele cria ou reutiliza um Ubuntu 24.04 isolado, instala o ambiente gráfico XFCE e configura Claude Code, OpenAI Codex CLI, tenta instalar Antigravity CLI, Zed e navegadores compatíveis.
+Instalador automatizado para Termux em aparelhos Android ARM64. Ele cria ou reutiliza um Ubuntu 24.04 isolado, instala o ambiente gráfico XFCE e configura Claude Code, OpenAI Codex CLI, tenta instalar Antigravity CLI, ZCode da Z.ai e navegadores compatíveis.
 
 ## Antes de começar
 
@@ -34,7 +34,7 @@ O instalador configura automaticamente:
 - DBus, fontes, ícones e dependências do ambiente gráfico.
 - Node.js, npm, Git, curl, wget e certificados dentro do Ubuntu.
 - Claude Code pelo pacote npm oficial da Anthropic.
-- Atalho **Claude Code** no menu do XFCE.
+- Atalhos para Claude Code, Codex, Antigravity CLI e ZCode (quando instalados) no menu do XFCE.
 - Comando de inicialização `claude-code-desktop` no Termux.
 - Verificações de versões e componentes essenciais antes de declarar sucesso.
 
@@ -48,7 +48,7 @@ Depois que o instalador terminar, execute no Termux:
 claude-code-desktop
 ```
 
-O Termux:X11 abrirá a tela gráfica. No XFCE, use o menu de aplicativos ou os ícones da área de trabalho para abrir as ferramentas e navegadores que tenham sido instalados com sucesso. Claude Code, Codex e Antigravity CLI abrem em terminais. Na primeira execução, faça login com sua própria conta em cada serviço; nenhuma conta ou credencial é fornecida pelo projeto.
+O Termux:X11 abrirá a tela gráfica. No XFCE, use o menu de aplicativos ou os ícones da área de trabalho para abrir as ferramentas e navegadores que tenham sido instalados com sucesso. Claude Code, Codex e Antigravity CLI abrem em terminais; o ZCode é o aplicativo gráfico da Z.ai. Na primeira execução, faça login com sua própria conta em cada serviço; nenhuma conta ou credencial é fornecida pelo projeto.
 
 Na primeira execução, faça login com sua própria conta Anthropic. O instalador não inclui contas, tokens, chaves, credenciais ou dados de terceiros.
 
@@ -75,7 +75,7 @@ Se houver uma falha, leia a mensagem exibida, corrija a causa (por exemplo, cone
 - [Termux](https://github.com/termux/termux-app)
 - [Termux:X11 — instruções oficiais](https://github.com/termux/termux-x11)
 - [PRoot-Distro](https://github.com/termux/proot-distro)
-- [Documentação oficial do Claude Code](https://docs.anthropic.com/en/docs/claude-code/getting-started)\n- [OpenAI Codex CLI](https://github.com/openai/codex)\n- [Google Antigravity — CLI e downloads](https://antigravity.google/download/linux)\n- [Zed — instalação Linux](https://zed.dev/docs/installation)\n- [Brave — instalação Linux](https://brave.com/pt-br/linux/)\n- [Google Chrome — requisitos e instalação](https://support.google.com/chrome/answer/95346?hl=pt-BR)
+- [Documentação oficial do Claude Code](https://docs.anthropic.com/en/docs/claude-code/getting-started)\n- [OpenAI Codex CLI](https://github.com/openai/codex)\n- [Google Antigravity — CLI e downloads](https://antigravity.google/download/linux)\n- [ZCode — instalação oficial Linux ARM64](https://zcode.z.ai/en/docs/install)\n- [Brave — instalação Linux](https://brave.com/pt-br/linux/)\n- [Google Chrome — requisitos e instalação](https://support.google.com/chrome/answer/95346?hl=pt-BR)
 
 Este projeto não é afiliado à Anthropic, ao Termux ou ao projeto Termux:X11.
 
@@ -83,7 +83,7 @@ Este projeto não é afiliado à Anthropic, ao Termux ou ao projeto Termux:X11.
 
 A instalação de aplicativos gráficos adicionais é uma tentativa controlada e não deve interromper a instalação principal:
 
-- **Zed:** o fornecedor exige Vulkan 1.3 e componentes de desktop. O pacote pode instalar, mas o editor pode não abrir em alguns aparelhos Android/PRoot por falta de acesso ao driver Vulkan.
+- **ZCode:** o instalador baixa o pacote DEB ARM64 oficial da Z.ai (versão 3.17.2 nesta revisão). A Z.ai oferece build Linux ARM64, mas isso não garante funcionamento dentro do Android/PRoot; aceleração gráfica, sandbox e dependências do Electron podem limitar a abertura. O login e a conexão com Z.ai/BigModel/API Key são feitos pelo próprio usuário no aplicativo.
 - **Brave e Google Chrome:** o instalador tenta usar os repositórios oficiais para ARM64. Em PRoot, os navegadores podem exigir flags de compatibilidade e ter limitações de sandbox, GPU, áudio ou desempenho.
 - **Antigravity:** o instalador adiciona o CLI oficial e um atalho de terminal. Isso não equivale a instalar/garantir a IDE gráfica completa.
 - **Painel XFCE:** o instalador cria um grupo de atalhos no painel inferior na primeira sessão gráfica. Se o painel personalizado do usuário impedir a configuração automática, os atalhos continuam disponíveis no menu e na área de trabalho.
