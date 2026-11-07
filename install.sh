@@ -202,13 +202,13 @@ log "Criando o atalho do Claude Code no menu do XFCE..."
 proot-distro login "$CONTAINER" -- bash -lc '
 set -Eeuo pipefail
 mkdir -p /usr/local/bin /usr/share/applications
-cat > /usr/local/bin/claude-code-terminal <<'"'"'EOF'"'"'
+cat > /usr/local/bin/claude-code-terminal <<\EOF
 #!/bin/bash
 export PATH="$HOME/.local/bin:$PATH"
 exec xfce4-terminal --title="Claude Code" --hold --command="claude"
 EOF
 chmod 755 /usr/local/bin/claude-code-terminal
-cat > /usr/share/applications/claude-code.desktop <<'"'"'EOF'"'"'
+cat > /usr/share/applications/claude-code.desktop <<\EOF
 [Desktop Entry]
 Version=1.0
 Type=Application
@@ -219,13 +219,13 @@ Icon=utilities-terminal
 Terminal=false
 Categories=Development;
 EOF
-cat > /usr/local/bin/codex-terminal <<'"'"'EOF'"'"'
+cat > /usr/local/bin/codex-terminal <<\EOF
 #!/bin/bash
 export PATH="$HOME/.local/bin:$PATH"
 exec xfce4-terminal --title="OpenAI Codex" --hold --command="codex"
 EOF
 chmod 755 /usr/local/bin/codex-terminal
-cat > /usr/share/applications/codex.desktop <<'"'"'EOF'"'"'
+cat > /usr/share/applications/codex.desktop <<\EOF
 [Desktop Entry]
 Version=1.0
 Type=Application
@@ -238,12 +238,12 @@ Categories=Development;
 EOF
 
 # Antigravity CLI terminal launcher.
-cat > /usr/local/bin/antigravity-terminal <<'"'"'EOF'"'"'
+cat > /usr/local/bin/antigravity-terminal <<\EOF
 #!/bin/bash
 exec xfce4-terminal --title="Google Antigravity" --hold --command="agy"
 EOF
 chmod 755 /usr/local/bin/antigravity-terminal
-cat > /usr/share/applications/antigravity-cli.desktop <<'"'"'EOF'"'"'
+cat > /usr/share/applications/antigravity-cli.desktop <<\EOF
 [Desktop Entry]
 Version=1.0
 Type=Application
@@ -317,7 +317,7 @@ done
 
 # Add installed applications to a single XFCE panel launcher (dock-style).
 mkdir -p /root/.config/autostart /root/.local/bin
-cat > /root/.local/bin/setup-termux-desktop-panel <<'"'"'EOF'"'"'
+cat > /root/.local/bin/setup-termux-desktop-panel <<\EOF
 #!/bin/bash
 set -u
 sleep 4
@@ -358,7 +358,7 @@ xfconf-query -c xfce4-panel -p "$panel_path" "${panel_args[@]}" || exit 0
 xfce4-panel -r >/dev/null 2>&1 || true
 EOF
 chmod 755 /root/.local/bin/setup-termux-desktop-panel
-cat > /root/.config/autostart/termux-desktop-panel.desktop <<'"'"'EOF'"'"'
+cat > /root/.config/autostart/termux-desktop-panel.desktop <<\EOF
 [Desktop Entry]
 Type=Application
 Name=Configure application shortcuts
