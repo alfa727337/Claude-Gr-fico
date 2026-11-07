@@ -1,6 +1,6 @@
 # Ubuntu gráfico + Claude Code no Android
 
-Instalador automatizado para Termux em aparelhos Android ARM64. Ele cria um Ubuntu 24.04 isolado, instala o ambiente gráfico XFCE e configura o Claude Code.
+Instalador automatizado para Termux em aparelhos Android ARM64. Ele cria ou reutiliza um Ubuntu 24.04 isolado, instala o ambiente gráfico XFCE e configura Claude Code e OpenAI Codex CLI.
 
 ## Antes de começar
 
@@ -16,7 +16,7 @@ Requisitos recomendados:
 - Memória RAM de pelo menos 4 GB; mais memória melhora a experiência.
 - Bateria/carregador: a primeira instalação pode demorar bastante. Não force o fechamento do Termux durante o processo.
 
-O instalador verifica a arquitetura, a presença do Termux:X11 quando o Android permite essa consulta e o espaço livre mínimo. Se o aparelho não atender aos requisitos, ele informa o motivo antes de começar.
+O instalador verifica a arquitetura e o espaço livre mínimo. A consulta `pm path` ao Termux:X11 é apenas informativa e não bloqueia a instalação, pois o serviço de pacotes do Android pode falhar mesmo quando o APK está instalado. Se o aparelho não atender aos requisitos, ele informa o motivo antes de começar.
 
 ## Instalação — um único comando
 
@@ -48,7 +48,7 @@ Depois que o instalador terminar, execute no Termux:
 claude-code-desktop
 ```
 
-O Termux:X11 abrirá a tela gráfica. No XFCE, abra o menu de aplicativos e selecione **Claude Code**.
+O Termux:X11 abrirá a tela gráfica. No XFCE, abra o menu de aplicativos e selecione **Claude Code** ou **OpenAI Codex**. Cada ferramenta abrirá em seu próprio terminal. Na primeira execução, faça login com a conta correspondente.
 
 Na primeira execução, faça login com sua própria conta Anthropic. O instalador não inclui contas, tokens, chaves, credenciais ou dados de terceiros.
 
@@ -75,6 +75,6 @@ Se houver uma falha, leia a mensagem exibida, corrija a causa (por exemplo, cone
 - [Termux](https://github.com/termux/termux-app)
 - [Termux:X11 — instruções oficiais](https://github.com/termux/termux-x11)
 - [PRoot-Distro](https://github.com/termux/proot-distro)
-- [Documentação oficial do Claude Code](https://docs.anthropic.com/en/docs/claude-code/getting-started)
+- [Documentação oficial do Claude Code](https://docs.anthropic.com/en/docs/claude-code/getting-started)\n- [OpenAI Codex CLI](https://github.com/openai/codex)
 
 Este projeto não é afiliado à Anthropic, ao Termux ou ao projeto Termux:X11.
