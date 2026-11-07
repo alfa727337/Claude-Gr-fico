@@ -16,14 +16,26 @@ Requisitos recomendados:
 - Memória RAM de pelo menos 4 GB; mais memória melhora a experiência.
 - Bateria/carregador: a primeira instalação pode demorar bastante. Não force o fechamento do Termux durante o processo.
 
-O instalador verifica a arquitetura e o espaço livre mínimo. A consulta `pm path` ao Termux:X11 é apenas informativa e não bloqueia a instalação, pois o serviço de pacotes do Android pode falhar mesmo quando o APK está instalado. Se o aparelho não atender aos requisitos, ele informa o motivo antes de começar.
+O instalador verifica a arquitetura e o espaço livre mínimo. A consulta `pm path` ao Termux:X11 é apenas informativa e não bloqueia a instalação, pois o serviço de pacotes do Android pode falhar mesmo quando o APK está instalado. Se o aparelho não atender aos requisitos, ele informa o motivo antes de começar. Se o `curl` do Termux estiver quebrado por incompatibilidade entre `curl` e `libcurl` (por exemplo, erro `cannot locate symbol`), o comando de instalação tenta usar `wget` para baixar o script; em seguida, o próprio instalador detecta a falha e tenta reinstalar `curl`, `libcurl`, OpenSSL e certificados pelo gerenciador de pacotes do Termux.
 
 ## Instalação — um único comando
 
 Abra o Termux e cole esta linha:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/alfa727337/Claude-Gr-fico/main/install.sh | bash
+URL="https://raw.githubusercontent.com/alfa727337/Claude-Gr-fico/main/install.sh"
+TMP_SCRIPT="$(mktemp)"
+if curl -fsSL "$URL" -o "$TMP_SCRIPT" 2>/dev/null || wget -qO "$TMP_SCRIPT" "$URL"; then
+  bash "$TMP_SCRIPT"
+  STATUS=$?
+  rm -f "$TMP_SCRIPT"
+  exit "$STATUS"
+else
+  rm -f "$TMP_SCRIPT"
+  echo "Não foi possível baixar o instalador. Verifique a internet e repare o curl com:"
+  echo "pkg update && pkg install --reinstall curl libcurl openssl ca-certificates -y"
+  exit 1
+fi
 ```
 
 O instalador configura automaticamente:
