@@ -7,7 +7,7 @@ readonly CONTAINER="claude-code"
 readonly DISPLAY_NUMBER=":1"
 readonly PREFIX_DIR="${PREFIX:-/data/data/com.termux/files/usr}"
 readonly BIN_DIR="$PREFIX_DIR/bin"
-readonly LAUNCHER="$BIN_DIR/claude-code-desktop"
+readonly LAUNCHER="$BIN_DIR/programas-linux-desktop"
 readonly MIN_FREE_KB=4000000
 
 log()  { printf '\n\033[1;32m[SETUP]\033[0m %s\n' "$*"; }
@@ -337,7 +337,7 @@ EOF
 '
 
 # ---------- Android launcher ----------
-log "Configurando o comando claude-code-desktop..."
+log "Configurando o comando programas-linux-desktop..."
 mkdir -p "$BIN_DIR"
 cat > "$LAUNCHER" <<'EOF'
 #!/data/data/com.termux/files/usr/bin/bash
@@ -396,7 +396,7 @@ test -x "$LAUNCHER" || die "O comando de inicialização não foi criado."
 printf '\n============================================================\n'
 printf ' INSTALAÇÃO E VERIFICAÇÕES CONCLUÍDAS\n'
 printf '============================================================\n'
-printf 'Abra a área de trabalho gráfica com:\n\n  claude-code-desktop\n\n'
+printf 'Abra a área de trabalho gráfica com:\n\n  programas-linux-desktop\n\n'
 printf 'No XFCE, abra o menu e selecione Claude Code.\n'
 printf 'Na primeira execução, autentique-se com sua própria conta Anthropic.\n'
 printf '============================================================\n'
