@@ -1,6 +1,6 @@
 # Ubuntu gráfico + Claude Code no Android
 
-Instalador automatizado para Termux em aparelhos Android ARM64. Ele cria ou reutiliza um Ubuntu 24.04 isolado, instala o ambiente gráfico XFCE e configura Claude Code e OpenAI Codex CLI.
+Instalador automatizado para Termux em aparelhos Android ARM64. Ele cria ou reutiliza um Ubuntu 24.04 isolado, instala o ambiente gráfico XFCE e configura Claude Code, OpenAI Codex CLI, tenta instalar Antigravity CLI, Zed e navegadores compatíveis.
 
 ## Antes de começar
 
@@ -48,7 +48,7 @@ Depois que o instalador terminar, execute no Termux:
 claude-code-desktop
 ```
 
-O Termux:X11 abrirá a tela gráfica. No XFCE, abra o menu de aplicativos e selecione **Claude Code** ou **OpenAI Codex**. Cada ferramenta abrirá em seu próprio terminal. Na primeira execução, faça login com a conta correspondente.
+O Termux:X11 abrirá a tela gráfica. No XFCE, use o menu de aplicativos ou os ícones da área de trabalho para abrir as ferramentas e navegadores que tenham sido instalados com sucesso. Claude Code, Codex e Antigravity CLI abrem em terminais. Na primeira execução, faça login com sua própria conta em cada serviço; nenhuma conta ou credencial é fornecida pelo projeto.
 
 Na primeira execução, faça login com sua própria conta Anthropic. O instalador não inclui contas, tokens, chaves, credenciais ou dados de terceiros.
 
@@ -75,6 +75,17 @@ Se houver uma falha, leia a mensagem exibida, corrija a causa (por exemplo, cone
 - [Termux](https://github.com/termux/termux-app)
 - [Termux:X11 — instruções oficiais](https://github.com/termux/termux-x11)
 - [PRoot-Distro](https://github.com/termux/proot-distro)
-- [Documentação oficial do Claude Code](https://docs.anthropic.com/en/docs/claude-code/getting-started)\n- [OpenAI Codex CLI](https://github.com/openai/codex)
+- [Documentação oficial do Claude Code](https://docs.anthropic.com/en/docs/claude-code/getting-started)\n- [OpenAI Codex CLI](https://github.com/openai/codex)\n- [Google Antigravity — CLI e downloads](https://antigravity.google/download/linux)\n- [Zed — instalação Linux](https://zed.dev/docs/installation)\n- [Brave — instalação Linux](https://brave.com/pt-br/linux/)\n- [Google Chrome — requisitos e instalação](https://support.google.com/chrome/answer/95346?hl=pt-BR)
 
 Este projeto não é afiliado à Anthropic, ao Termux ou ao projeto Termux:X11.
+
+## Compatibilidade das ferramentas gráficas
+
+A instalação de aplicativos gráficos adicionais é uma tentativa controlada e não deve interromper a instalação principal:
+
+- **Zed:** o fornecedor exige Vulkan 1.3 e componentes de desktop. O pacote pode instalar, mas o editor pode não abrir em alguns aparelhos Android/PRoot por falta de acesso ao driver Vulkan.
+- **Brave e Google Chrome:** o instalador tenta usar os repositórios oficiais para ARM64. Em PRoot, os navegadores podem exigir flags de compatibilidade e ter limitações de sandbox, GPU, áudio ou desempenho.
+- **Antigravity:** o instalador adiciona o CLI oficial e um atalho de terminal. Isso não equivale a instalar/garantir a IDE gráfica completa.
+- **Painel XFCE:** os atalhos ficam no menu de aplicativos e na área de trabalho; não é garantido que sejam fixados automaticamente no painel em todas as configurações do XFCE.
+
+A instalação pode exigir bastante armazenamento adicional. A disponibilidade de pacotes ARM64 e a execução gráfica devem ser verificadas no aparelho. Cada usuário autentica suas próprias contas na primeira abertura.
