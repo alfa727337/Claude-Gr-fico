@@ -82,7 +82,7 @@ fi
 proot-distro login "$CONTAINER" -- /bin/true >/dev/null 2>&1 || die "O Ubuntu '$CONTAINER' existe, mas não abriu corretamente. Não foi apagado; verifique o erro do proot-distro."
 
 # ---------- Desktop and runtime ----------
-log "Instalando/atualizando XFCE, terminal, Thunar, DBus e ferramentas..."
+log "Instalando/atualizando XFCE e uma suíte ampla de desenvolvimento (Python, Node, Java, Go, Rust, PHP, Ruby, bancos clientes e toolchains)..."
 proot-distro login "$CONTAINER" -- bash -lc '
 set -Eeuo pipefail
 export DEBIAN_FRONTEND=noninteractive
@@ -91,13 +91,13 @@ apt-get install -y --no-install-recommends \
   xfce4 xfce4-terminal thunar dbus-x11 dbus-user-session \
   xterm fonts-dejavu-core fonts-liberation fonts-noto-core fonts-noto-color-emoji \
   adwaita-icon-theme hicolor-icon-theme shared-mime-info desktop-file-utils \
-  nodejs npm python3 python3-pip python3-venv python3-dev \
-  build-essential gcc g++ make cmake pkg-config clang \
-  git git-lfs curl wget ca-certificates gnupg gpg file unzip zip p7zip-full \
-  procps psmisc lsof nano vim less htop tree rsync \
-  openssh-client openssh-server dnsutils iputils-ping net-tools \
-  libffi-dev libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev \
-  sudo xdg-utils xdg-user-dirs
+  nodejs npm python3 python3-pip python3-venv python3-dev pipx \
+  default-jdk golang-go rustc cargo ruby-full php-cli php-curl php-xml php-mbstring \
+  build-essential gcc g++ make cmake ninja-build pkg-config clang lld gdb \
+  git git-lfs git-svn curl wget aria2 rsync rclone ca-certificates gnupg gpg file \
+  unzip zip p7zip-full xz-utils bzip2 gzip tar zstd \
+  procps psmisc lsof strace nano vim-tiny less htop tree jq yq   openssh-client openssh-server dnsutils iputils-ping net-tools iproute2 socat   sqlite3 postgresql-client redis-tools   libffi-dev libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev \
+  liblzma-dev libxml2-dev libxslt1-dev libjpeg-dev libpng-dev   sudo xdg-utils xdg-user-dirs
 '
 
 # Claude Code officially supports Linux ARM64 and requires Node.js 18+.
@@ -108,6 +108,12 @@ node -e "const v=process.versions.node.split(\".\").map(Number); if(v[0] < 18) {
 python3 --version
 python3 -m pip --version
 python3 -m venv --help >/dev/null
+java -version 2>&1 | head -n 1
+go version
+rustc --version
+cargo --version
+php --version | head -n 1
+ruby --version
 gcc --version | head -n 1
 cmake --version | head -n 1
 npm --version
@@ -408,6 +414,12 @@ node -e "const v=process.versions.node.split(\".\").map(Number); if(v[0] < 18) p
 python3 --version
 python3 -m pip --version
 python3 -m venv --help >/dev/null
+java -version >/dev/null 2>&1
+go version >/dev/null
+rustc --version >/dev/null
+cargo --version >/dev/null
+php --version >/dev/null
+ruby --version >/dev/null
 gcc --version >/dev/null
 cmake --version >/dev/null
 npm --version >/dev/null
