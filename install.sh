@@ -104,6 +104,53 @@ command -v codex
 codex --version
 '
 
+# Optional developer tools and browsers. These are best-effort because
+# GUI/GPU support inside Android PRoot varies by device.
+log "Instalando Antigravity CLI oficial..."
+proot-distro login "$CONTAINER" -- bash -lc '
+set -Eeuo pipefail
+if curl -fsSL https://antigravity.google/cli/install.sh | bash; then
+  command -v agy || true
+else
+  echo "AVISO: Antigravity CLI não pôde ser instalado neste aparelho."
+fi
+' || warn "Antigravity CLI não foi instalado; o restante da instalação continuará."
+
+log "Tentando instalar o editor Zed para Linux ARM64..."
+proot-distro login "$CONTAINER" -- bash -lc '
+set -u
+if curl -fsSL https://zed.dev/install.sh | sh; then
+  command -v zed || true
+else
+  echo "AVISO: Zed não pôde ser instalado. A execução também depende de Vulkan 1.3."
+fi
+' || warn "Zed não foi instalado; o restante da instalação continuará."
+
+log "Instalando Brave para ARM64 pelo repositório oficial..."
+proot-distro login "$CONTAINER" -- bash -lc '
+set -u
+export DEBIAN_FRONTEND=noninteractive
+if curl -fsS https://dl.brave.com/install.sh | sh; then
+  command -v brave-browser || true
+else
+  echo "AVISO: Brave não pôde ser instalado."
+fi
+' || warn "Brave não foi instalado; o restante da instalação continuará."
+
+log "Tentando instalar Google Chrome ARM64 pelo repositório oficial..."
+proot-distro login "$CONTAINER" -- bash -lc '
+set -u
+export DEBIAN_FRONTEND=noninteractive
+install -d -m 0755 /etc/apt/keyrings
+if curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor --yes -o /etc/apt/keyrings/google-chrome.gpg; then
+  echo "deb [arch=arm64 signed-by=/etc/apt/keyrings/google-chrome.gpg] https://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list
+  apt-get update
+  apt-get install -y google-chrome-stable
+else
+  echo "AVISO: não foi possível obter a chave oficial do Chrome."
+fi
+' || warn "Google Chrome não foi instalado. O repositório oficial pode não oferecer pacote para esta arquitetura."
+
 # ---------- XFCE menu shortcut ----------
 log "Criando o atalho do Claude Code no menu do XFCE..."
 proot-distro login "$CONTAINER" -- bash -lc '
@@ -143,6 +190,56 @@ Icon=utilities-terminal
 Terminal=false
 Categories=Development;
 EOF
+
+# Antigravity CLI terminal launcher.
+cat > /usr/local/bin/antigravity-terminal <<'"'"'EOF'"'"'
+#!/bin/bash
+exec xfce4-terminal --title="Google Antigravity" --hold --command="agy"
+EOF
+chmod 755 /usr/local/bin/antigravity-terminal
+cat > /usr/share/applications/antigravity-cli.desktop <<'"'"'EOF'"'"'
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Google Antigravity CLI
+Comment=Open Antigravity CLI
+Exec=/usr/local/bin/antigravity-terminal
+Icon=utilities-terminal
+Terminal=false
+Categories=Development;
+EOF
+
+# Graphical editor and browser launchers. Chromium browsers need no-sandbox
+# in many PRoot setups; this is a compatibility trade-off, not full isolation.
+for app in zed brave-browser google-chrome-stable; do
+  case "$app" in
+    zed) label="Zed"; exec_cmd="zed" ;;
+    brave-browser) label="Brave"; exec_cmd="brave-browser --no-sandbox --disable-dev-shm-usage" ;;
+    google-chrome-stable) label="Google Chrome"; exec_cmd="google-chrome-stable --no-sandbox --disable-dev-shm-usage" ;;
+  esac
+  if command -v "$app" >/dev/null 2>&1; then
+    cat > "/usr/share/applications/${app}.desktop" <<EOF
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=${label}
+Comment=Launch ${label}
+Exec=${exec_cmd} %U
+Icon=${app}
+Terminal=false
+Categories=Network;WebBrowser;
+EOF
+  fi
+done
+
+# Copy application shortcuts to the XFCE desktop as visible one-click icons.
+mkdir -p /root/Desktop
+for desktop_file in claude-code.desktop codex.desktop antigravity-cli.desktop zed.desktop brave-browser.desktop google-chrome-stable.desktop; do
+  if [ -f "/usr/share/applications/$desktop_file" ]; then
+    cp "/usr/share/applications/$desktop_file" "/root/Desktop/$desktop_file"
+    chmod +x "/root/Desktop/$desktop_file"
+  fi
+done
 '
 
 # ---------- Android launcher ----------
@@ -198,6 +295,7 @@ test -x /usr/local/bin/claude-code-terminal
 test -f /usr/share/applications/claude-code.desktop
 test -x /usr/local/bin/codex-terminal
 test -f /usr/share/applications/codex.desktop
+test -f /usr/share/applications/antigravity-cli.desktop
 '
 test -x "$LAUNCHER" || die "O comando de inicialização não foi criado."
 
