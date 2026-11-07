@@ -251,12 +251,8 @@ command -v xfconf-query >/dev/null 2>&1 || exit 0
 command -v xfce4-panel >/dev/null 2>&1 || exit 0
 apps=(claude-code.desktop codex.desktop antigravity-cli.desktop zed.desktop brave-browser.desktop google-chrome-stable.desktop)
 items=()
-mkdir -p "$HOME/.config/xfce4/panel/launcher-98"
 for f in "${apps[@]}"; do
-  if [ -f "/usr/share/applications/$f" ]; then
-    cp "/usr/share/applications/$f" "$HOME/.config/xfce4/panel/launcher-98/$f"
-    items+=("$f")
-  fi
+  [ -f "/usr/share/applications/$f" ] && items+=("$f")
 done
 [ "${#items[@]}" -gt 0 ] || exit 0
 # Use a dedicated high plugin ID; avoid overwriting an existing user's plugin.
@@ -264,6 +260,10 @@ plugin=98
 while xfconf-query -c xfce4-panel -p "/plugins/plugin-$plugin" >/dev/null 2>&1; do
   plugin=$((plugin + 1))
   [ "$plugin" -lt 200 ] || exit 0
+done
+mkdir -p "$HOME/.config/xfce4/panel/launcher-$plugin"
+for f in "${items[@]}"; do
+  cp "/usr/share/applications/$f" "$HOME/.config/xfce4/panel/launcher-$plugin/$f"
 done
 panel_ids=$(xfconf-query -c xfce4-panel -p /panels 2>/dev/null | awk '/^[[:space:]]*[0-9]+[[:space:]]*$/ {gsub(/[[:space:]]/,""); print; exit}')
 [ -n "$panel_ids" ] || exit 0
