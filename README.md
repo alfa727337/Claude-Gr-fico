@@ -17,26 +17,19 @@ Requisitos recomendados:
 - Bateria/carregador: a primeira instalação pode demorar bastante. Não force o fechamento do Termux durante o processo.
 
 O instalador verifica a arquitetura e o espaço livre mínimo. A consulta `pm path` ao Termux:X11 é apenas informativa e não bloqueia a instalação, pois o serviço de pacotes do Android pode falhar mesmo quando o APK está instalado. Se o aparelho não atender aos requisitos, ele informa o motivo antes de começar. Se o `curl` do Termux estiver quebrado por incompatibilidade entre `curl` e `libcurl` (por exemplo, erro `cannot locate symbol`), o comando de instalação tenta usar `wget` para baixar o script; em seguida, o próprio instalador detecta a falha e tenta reinstalar `curl`, `libcurl`, OpenSSL e certificados pelo gerenciador de pacotes do Termux.
+A instalação usa modo não interativo para que atualizações de arquivos de configuração do sistema não parem aguardando uma resposta no teclado. Quando necessário, aplica a versão de configuração fornecida pelo pacote atualizado.
 
 ## Instalação — um único comando
 
-Abra o Termux e cole esta linha:
+Depois de instalar somente os dois APKs (**Termux** e **Termux:X11**), abra o Termux padrão. Não é necessário instalar previamente Node.js, Ubuntu, proot-distro, XFCE, Git ou qualquer outra dependência.
+
+Cole exatamente este único comando:
 
 ```bash
-URL="https://raw.githubusercontent.com/alfa727337/Claude-Gr-fico/main/install.sh"
-TMP_SCRIPT="$(mktemp)"
-if curl -fsSL "$URL" -o "$TMP_SCRIPT" 2>/dev/null || wget -qO "$TMP_SCRIPT" "$URL"; then
-  bash "$TMP_SCRIPT"
-  STATUS=$?
-  rm -f "$TMP_SCRIPT"
-  exit "$STATUS"
-else
-  rm -f "$TMP_SCRIPT"
-  echo "Não foi possível baixar o instalador. Verifique a internet e repare o curl com:"
-  echo "pkg update && pkg install --reinstall curl libcurl openssl ca-certificates -y"
-  exit 1
-fi
+curl -fsSL https://raw.githubusercontent.com/alfa727337/Claude-Gr-fico/main/install.sh | bash
 ```
+
+O script baixa e configura automaticamente os pacotes necessários no Termux e, em seguida, cria o Ubuntu e instala o ambiente e as ferramentas dentro dele. Em instalações limpas, o Termux precisa conseguir executar o `curl` que já vem disponível no ambiente inicial e ter acesso à internet. Se a própria instalação básica do Termux estiver corrompida a ponto de o comando `curl` não iniciar, nenhum script remoto pode ser baixado por esse mesmo comando; isso é uma falha prévia do aplicativo/ambiente, não uma dependência que o instalador possa instalar antes de ser executado.
 
 O instalador configura automaticamente:
 
