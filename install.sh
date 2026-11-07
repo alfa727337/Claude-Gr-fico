@@ -224,15 +224,17 @@ Categories=Development;
 EOF
 
 # ZCode desktop launcher. The package may expose either command spelling.
-if command -v zcode >/dev/null 2>&1 || command -v ZCode >/dev/null 2>&1; then
+if command -v zcode >/dev/null 2>&1 || command -v ZCode >/dev/null 2>&1 || [ -x /opt/ZCode/zcode ]; then
   cat > /usr/local/bin/zcode-desktop <<'EOF'
 #!/bin/bash
 if command -v zcode >/dev/null 2>&1; then
   exec zcode --no-sandbox --disable-gpu "$@"
 elif command -v ZCode >/dev/null 2>&1; then
   exec ZCode --no-sandbox --disable-gpu "$@"
+elif [ -x /opt/ZCode/zcode ]; then
+  exec /opt/ZCode/zcode --no-sandbox --disable-gpu "$@"
 fi
-echo "ZCode não encontrado no PATH. Reinstale o pacote oficial." >&2
+echo "ZCode não encontrado. Verifique a instalação do pacote oficial." >&2
 exit 127
 EOF
   chmod 755 /usr/local/bin/zcode-desktop
