@@ -11,7 +11,7 @@ Instale manualmente no Android:
 
 Requisitos recomendados:
 - Android ARM64 (64 bits).
-- Pelo menos **5 GB livres** para iniciar a instalação; **8 GB ou mais são recomendados** para acomodar cache e atualizações.
+- Pelo menos **4 GB livres** para iniciar a instalação; **8 GB ou mais são recomendados** para acomodar cache, atualizações e possíveis variações de tamanho.
 - Conexão estável com a internet.
 - Memória RAM de pelo menos 4 GB; mais memória melhora a experiência.
 - Bateria/carregador: a primeira instalação pode demorar bastante. Não force o fechamento do Termux durante o processo.
