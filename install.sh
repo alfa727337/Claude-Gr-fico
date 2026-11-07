@@ -30,11 +30,14 @@ command -v pkg >/dev/null 2>&1 || die "O gerenciador de pacotes pkg não foi enc
 # Repair a broken Termux curl/libcurl installation before relying on curl.
 # The bootstrap command in README also supports wget so this script can still
 # be downloaded when curl fails to load because of a shared-library mismatch.
+export DEBIAN_FRONTEND=noninteractive
+export APT_LISTCHANGES_FRONTEND=none
+
 if ! curl --version >/dev/null 2>&1; then
-  warn "O curl do Termux não iniciou corretamente. Tentando reparar curl/libcurl e OpenSSL..."
+  warn "O curl do Termux não iniciou corretamente. Tentando reparar curl/libcurl e OpenSSL automaticamente..."
   pkg update -y
-  pkg install --reinstall -y curl libcurl openssl ca-certificates
-  curl --version >/dev/null 2>&1 || die "O curl continua com erro após a reparação automática. Execute: pkg update && pkg install --reinstall curl libcurl openssl ca-certificates -y"
+  pkg install --reinstall -y -o Dpkg::Options::=--force-confnew curl libcurl openssl ca-certificates
+  curl --version >/dev/null 2>&1 || die "O curl continua sem iniciar após a tentativa automática. Em uma instalação limpa isso não deveria ocorrer; verifique a origem/versão do APK Termux."
   log "curl/libcurl reparado com sucesso."
 fi
 
@@ -57,11 +60,11 @@ fi
 # ---------- Termux packages ----------
 log "Atualizando os repositórios do Termux..."
 pkg update -y
-pkg install -y x11-repo
+pkg install -y -o Dpkg::Options::=--force-confnew x11-repo
 pkg update -y
 
-log "Instalando o suporte Linux e gráfico no Termux..."
-pkg install -y proot-distro termux-x11-nightly git curl wget ca-certificates termux-tools
+log "Instalando automaticamente todas as dependências do Termux..."
+pkg install -y -o Dpkg::Options::=--force-confnew proot-distro termux-x11-nightly git curl wget ca-certificates termux-tools
 
 command -v termux-x11 >/dev/null 2>&1 || die "O comando termux-x11 não foi instalado. Confira os repositórios do Termux."
 command -v proot-distro >/dev/null 2>&1 || die "proot-distro não foi instalado."
