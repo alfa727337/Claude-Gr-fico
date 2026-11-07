@@ -59,9 +59,11 @@ Na primeira execução, faça login com sua própria conta Anthropic. O instalad
 
 ## Se a instalação for interrompida
 
-O instalador foi preparado para poder ser executado novamente. Ele preserva o container `claude-code` que já existir e tenta continuar a instalação/configuração, sem apagá-lo.
+O instalador foi preparado para poder ser executado novamente. Ele verifica também o diretório real do Ubuntu instalado, preserva o container `claude-code` que já existir e continua a configuração sem tentar criá-lo novamente. Isso evita o erro `container is busy` que pode ocorrer quando uma sessão anterior do Ubuntu ainda está aberta.
 
-Se houver uma falha, leia a mensagem exibida, corrija a causa (por exemplo, conexão ou espaço insuficiente) e execute novamente o mesmo comando de instalação.
+Se uma sessão anterior estiver usando arquivos do Ubuntu e houver conflito durante a configuração, feche essa sessão pelo próprio Termux e execute novamente o mesmo comando. Não é necessário apagar o container nem instalar tudo do zero.
+
+Se houver outra falha, leia a mensagem exibida, corrija a causa (por exemplo, conexão ou espaço insuficiente) e execute novamente o mesmo comando de instalação.
 
 **Não apague manualmente o diretório do Termux nem o container para tentar corrigir uma falha.** Isso pode remover dados locais.
 
