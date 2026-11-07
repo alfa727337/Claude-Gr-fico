@@ -257,7 +257,7 @@ EOF
 
 # ZCode desktop launcher. The package may expose either command spelling.
 if command -v zcode >/dev/null 2>&1 || command -v ZCode >/dev/null 2>&1 || [ -x /opt/ZCode/zcode ]; then
-  cat > /usr/local/bin/zcode-desktop <<'EOF'
+  cat > /usr/local/bin/zcode-desktop <<\EOF
 #!/bin/bash
 if command -v zcode >/dev/null 2>&1; then
   exec zcode --no-sandbox --disable-gpu "$@"
@@ -270,7 +270,7 @@ echo "ZCode não encontrado. Verifique a instalação do pacote oficial." >&2
 exit 127
 EOF
   chmod 755 /usr/local/bin/zcode-desktop
-  cat > /usr/share/applications/zcode.desktop <<'EOF'
+  cat > /usr/share/applications/zcode.desktop <<\EOF
 [Desktop Entry]
 Version=1.0
 Type=Application
