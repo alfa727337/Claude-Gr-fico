@@ -240,6 +240,58 @@ for desktop_file in claude-code.desktop codex.desktop antigravity-cli.desktop ze
     chmod +x "/root/Desktop/$desktop_file"
   fi
 done
+
+# Add installed applications to a single XFCE panel launcher (dock-style).
+mkdir -p /root/.config/autostart /root/.local/bin
+cat > /root/.local/bin/setup-termux-desktop-panel <<'"'"'EOF'"'"'
+#!/bin/bash
+set -u
+sleep 4
+command -v xfconf-query >/dev/null 2>&1 || exit 0
+command -v xfce4-panel >/dev/null 2>&1 || exit 0
+apps=(claude-code.desktop codex.desktop antigravity-cli.desktop zed.desktop brave-browser.desktop google-chrome-stable.desktop)
+items=()
+mkdir -p "$HOME/.config/xfce4/panel/launcher-98"
+for f in "${apps[@]}"; do
+  if [ -f "/usr/share/applications/$f" ]; then
+    cp "/usr/share/applications/$f" "$HOME/.config/xfce4/panel/launcher-98/$f"
+    items+=("$f")
+  fi
+done
+[ "${#items[@]}" -gt 0 ] || exit 0
+# Use a dedicated high plugin ID; avoid overwriting an existing user's plugin.
+plugin=98
+while xfconf-query -c xfce4-panel -p "/plugins/plugin-$plugin" >/dev/null 2>&1; do
+  plugin=$((plugin + 1))
+  [ "$plugin" -lt 200 ] || exit 0
+done
+panel_ids=$(xfconf-query -c xfce4-panel -p /panels 2>/dev/null | awk '/^[[:space:]]*[0-9]+[[:space:]]*$/ {gsub(/[[:space:]]/,""); print; exit}')
+[ -n "$panel_ids" ] || exit 0
+panel_path="/panels/panel-$panel_ids/plugin-ids"
+existing=()
+while IFS= read -r id; do
+  [[ "$id" =~ ^[0-9]+$ ]] && existing+=("$id")
+done < <(xfconf-query -c xfce4-panel -p "$panel_path" 2>/dev/null | awk '/^[[:space:]]*[0-9]+[[:space:]]*$/ {gsub(/[[:space:]]/,""); print}')
+xfconf-query -c xfce4-panel -p "/plugins/plugin-$plugin" -t string -s launcher --create || exit 0
+item_args=()
+for f in "${items[@]}"; do item_args+=(-t string -s "$f"); done
+xfconf-query -c xfce4-panel -p "/plugins/plugin-$plugin/items" "${item_args[@]}" --create || exit 0
+xfconf-query -c xfce4-panel -p "$panel_path" -rR >/dev/null 2>&1 || true
+panel_args=()
+for id in "${existing[@]}"; do panel_args+=(-t int -s "$id"); done
+panel_args+=(-t int -s "$plugin" --create)
+xfconf-query -c xfce4-panel -p "$panel_path" "${panel_args[@]}" || exit 0
+xfce4-panel -r >/dev/null 2>&1 || true
+EOF
+chmod 755 /root/.local/bin/setup-termux-desktop-panel
+cat > /root/.config/autostart/termux-desktop-panel.desktop <<'"'"'EOF'"'"'
+[Desktop Entry]
+Type=Application
+Name=Configure application shortcuts
+Exec=/root/.local/bin/setup-termux-desktop-panel
+OnlyShowIn=XFCE;
+X-GNOME-Autostart-enabled=true
+EOF
 '
 
 # ---------- Android launcher ----------
