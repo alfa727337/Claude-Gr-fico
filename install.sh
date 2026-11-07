@@ -27,6 +27,17 @@ trap on_error ERR
 command -v pkg >/dev/null 2>&1 || die "O gerenciador de pacotes pkg não foi encontrado."
 [ -n "${PREFIX:-}" ] || die "A variável PREFIX não está definida. Abra o Termux oficial e tente novamente."
 
+# Repair a broken Termux curl/libcurl installation before relying on curl.
+# The bootstrap command in README also supports wget so this script can still
+# be downloaded when curl fails to load because of a shared-library mismatch.
+if ! curl --version >/dev/null 2>&1; then
+  warn "O curl do Termux não iniciou corretamente. Tentando reparar curl/libcurl e OpenSSL..."
+  pkg update -y
+  pkg install --reinstall -y curl libcurl openssl ca-certificates
+  curl --version >/dev/null 2>&1 || die "O curl continua com erro após a reparação automática. Execute: pkg update && pkg install --reinstall curl libcurl openssl ca-certificates -y"
+  log "curl/libcurl reparado com sucesso."
+fi
+
 # Android's package service (pm path) may fail with a Binder transaction error
 # on some devices even when Termux:X11 is installed. Do not block setup here.
 if command -v pm >/dev/null 2>&1 && ! pm path com.termux.x11 >/dev/null 2>&1; then
