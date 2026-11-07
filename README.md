@@ -86,6 +86,6 @@ A instalação de aplicativos gráficos adicionais é uma tentativa controlada e
 - **Zed:** o fornecedor exige Vulkan 1.3 e componentes de desktop. O pacote pode instalar, mas o editor pode não abrir em alguns aparelhos Android/PRoot por falta de acesso ao driver Vulkan.
 - **Brave e Google Chrome:** o instalador tenta usar os repositórios oficiais para ARM64. Em PRoot, os navegadores podem exigir flags de compatibilidade e ter limitações de sandbox, GPU, áudio ou desempenho.
 - **Antigravity:** o instalador adiciona o CLI oficial e um atalho de terminal. Isso não equivale a instalar/garantir a IDE gráfica completa.
-- **Painel XFCE:** os atalhos ficam no menu de aplicativos e na área de trabalho; não é garantido que sejam fixados automaticamente no painel em todas as configurações do XFCE.
+- **Painel XFCE:** o instalador cria um grupo de atalhos no painel inferior na primeira sessão gráfica. Se o painel personalizado do usuário impedir a configuração automática, os atalhos continuam disponíveis no menu e na área de trabalho.
 
 A instalação pode exigir bastante armazenamento adicional. A disponibilidade de pacotes ARM64 e a execução gráfica devem ser verificadas no aparelho. Cada usuário autentica suas próprias contas na primeira abertura.
